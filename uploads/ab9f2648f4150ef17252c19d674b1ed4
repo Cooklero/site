@@ -1,0 +1,78 @@
+//9 зад 
+Console.ForegroundColor = ConsoleColor.Green;
+Console.WriteLine("Привет пользователь");
+Console.ForegroundColor = ConsoleColor.White;
+Console.WriteLine("Введите имя пользователя (user)");
+string UserName = Console.ReadLine();
+Console.WriteLine("Введите пароль (pass)");
+string Password = Console.ReadLine();
+if (UserName == "user" && Password == "pass")
+{
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine("Пароль и пользователь - верны");
+    Console.ForegroundColor = ConsoleColor.White;
+}
+else
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("Пароль/логин не совпадают");
+    Console.ForegroundColor = ConsoleColor.White;
+}
+//8
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("Привет пользователь");
+Console.ForegroundColor = ConsoleColor.White;
+Console.WriteLine("Введите текст,состоящий не менее чем из пяти слов ");
+string Text = Console.ReadLine();
+string Text2 = " ";
+for (int i2 = 0; i2 < Text.Length; i2++)
+{
+    if (Text[i2] == Char.ToUpper(Text[i2]))
+    {
+        Text2 = Text2 + Char.ToLower(Text[i2]);
+    }
+    else
+    {
+        Text2 = Text2 + Char.ToUpper(Text[i2]);
+    }
+}
+Console.WriteLine($"{Text} \n {Text2}");
+//10
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("Привет пользователь");
+Console.ForegroundColor = ConsoleColor.White;
+Console.WriteLine("Введите натуральное целое число,означающие сколько раз вы хотите ввести Фамилию и Имя");
+int count = Convert.ToInt32(Console.ReadLine());
+string[] arr = new string[count];
+for(int i = 0; i < arr.Length; i++) { 
+Console.WriteLine("Введитие Фамилию и имя Пример:Иванович Иван");
+arr[i] = Console.ReadLine();
+}
+Array.Sort(arr);
+Console.WriteLine(String.Join(",", arr));
+//6
+Console.WriteLine("Привет пользователь");
+Console.WriteLine("Введите текст не менее чем из 5 слов ");
+string s = Console.ReadLine();
+string[] subs = s.Split(' ');
+char[] r = new char[30];
+for(int i = 0; i < subs.Length; i++) { 
+r = subs[i].ToCharArray();
+Array.Reverse(r);
+subs[i] = String.Join("", r);
+}
+Console.WriteLine(String.Join(" ", subs));
+//5
+Console.ForegroundColor = ConsoleColor.Blue;
+Console.WriteLine("Привет пользователь");
+Console.ForegroundColor = ConsoleColor.White;
+Console.WriteLine("Введите натуральное вещественное число a");
+double a4 = Convert.ToDouble(Console.ReadLine());
+Console.WriteLine("Введите натуральное вещественное число b");
+double b4 = Convert.ToDouble(Console.ReadLine());
+Console.WriteLine("Введите натуральное вещественное число c");
+double c4 = Convert.ToDouble(Console.ReadLine());
+if(a4 + b4 + c4 > 180)
+{
+    Console.WriteLine("НЕт такого треугольника");
+}

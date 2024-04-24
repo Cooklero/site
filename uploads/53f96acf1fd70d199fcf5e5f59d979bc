@@ -1,0 +1,797 @@
+
+import React, { useState, useEffect,useContext } from 'react';
+import { Collapse,Radio, Breadcrumb ,Modal, TimePicker, Select, Input, Tree, Menu, Dropdown, Button} from 'antd';
+import './catalouger.css'
+import {
+  FolderAddTwoTone,FolderTwoTone,FolderOpenTwoTone,FileTextTwoTone,FileExclamationTwoTone
+} from '@ant-design/icons';
+import {useNavigate} from 'react-router-dom'
+import MDEditor, { commands,
+  ICommand,
+  EditorContext } from "@uiw/react-md-editor";
+  import Aos from 'aos'
+// No import is required in the WebPack.
+import "@uiw/react-md-editor/markdown-editor.css";
+// No import is required in the WebPack.
+import "@uiw/react-markdown-preview/markdown.css";
+import axios from 'axios'
+const { TreeNode } = Tree;
+const { Search } = Input;
+
+
+ const ContextMenu = ({ onSelectCreate }) => {
+   return (
+     <Menu>
+       <Menu.Item key="создать" onClick={onSelectCreate}>
+         Создать тему
+       </Menu.Item>
+     </Menu>
+   );
+ }
+
+ 
+const items2= [
+  {
+    key: '1',
+    label: 'Фильтры',
+    children: [<h3>Сложность</h3>,<Radio.Group >
+      <Radio value={1}>Легкие</Radio>
+      <Radio value={2}>Средние</Radio>
+      <Radio value={3}>Сложные</Radio>
+    </Radio.Group>,<h3>Тип задания</h3>,<Select
+    showSearch
+    placeholder="Конспект"
+    optionFilterProp="children"
+    
+    options={[
+      {
+        value: 'Решение задачи',
+        label: 'Решение задачи',
+      },{
+        value: 'Анализ текста',
+        label: 'Анализ текста',
+      },{
+        value: 'Отчёт',
+        label: 'Отчёт',
+      },
+ 
+    ]}
+  />,<h3 >Время выполнения</h3>, <TimePicker style={{width:210}} placeholder='Время выполнения' showNow={false}  format="mm" minuteStep={5}/>]
+  },
+  
+];
+
+ 
+ const ContextMenuTree = () => {
+   
+   const handleContextMenu = (event, node) => {
+ 
+     setSelectedNode(node);
+   }
+
+ const mkdStr = '';
+   const [value, setValue] = useState(mkdStr);
+
+   const mkdStr2 = '';
+   const [value2, setValue2] = useState(mkdStr2);
+   const [DataTree, setTree] = useState('');
+ const { TreeNode } = Tree;
+   const handleCreateNode = () => {
+     // Logic to create a new node
+     console.log('Creating a new node...');
+     setSelectedNode(null);
+   }
+   const handleDeleteNode = () => {
+     // Logic to delete selected node
+     console.log('Deleting selected node...');
+     setSelectedNode(null);
+   }
+   const menu = (
+     <ContextMenu onSelectCreate={handleCreateNode} />
+   );
+   //Выгрузка данных из бд и их подготовка для генерации в теге tree
+    const handleSelect = (_, info) => {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get('https://reactbckend-2.onrender.com/users'); // Получаем данные из таблицы Пользователи и предметы
+          setArr(response.data); // сохраняем полученные данные в состояние
+          
+          const response2 = await axios.get('https://reactbckend-2.onrender.com/topics'); // Получаем данные из таблицы темы
+          settopics(response2.data); // сохраняем полученные данные в состояние
+          
+          const response3 = await axios.get('https://reactbckend-2.onrender.com/pr'); // Получаем данные из таблицы практические
+          setpr(response3.data); // сохраняем полученные данные в состояние
+  
+          const response4 = await axios.get('https://reactbckend-2.onrender.com/works'); // Получаем данные из таблицы работы
+          setworks(response4.data); // сохраняем полученные данные в состояние
+  
+        } catch (error) {
+          console.error('Ошибкаd при полученdsdии данных:', error);
+        }
+      };
+  
+      fetchData();
+      // сохраняем полученные данные в состояние
+   if (info.node.props.eventKey.includes("WR")) {
+    
+      var idT = info.node.props.eventKey.split("-")
+    
+     for( var w = 0; w < works.length; w++){
+   
+        
+      if (String(works[w].id_works) == String(idT[1])) {
+        const button = document.getElementById('TaskName');
+        handleClick(idT[2],idT[3],idT[4])
+       
+
+        button.textContent = `${works[w].title}`; 
+       setValue2(works[w].description)
+     console.log(String(works[w].file))
+        }
+    }
+   }
+ };
+  const [usersAndlessons, setArr] = useState([]);
+  const [topics, settopics] = useState([]);
+  const [pr, setpr] = useState([]);
+  const [works, setworks] = useState([]);
+  
+  useEffect(()=>{
+  Aos.init({duration:1700})
+})
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://reactbckend-2.onrender.com/users'); // Получаем данные из таблицы Пользователи и предметы
+        setArr(response.data); // сохраняем полученные данные в состояние
+        
+        const response2 = await axios.get('https://reactbckend-2.onrender.com/topics'); // Получаем данные из таблицы темы
+        settopics(response2.data); // сохраняем полученные данные в состояние
+        
+        const response3 = await axios.get('https://reactbckend-2.onrender.com/pr'); // Получаем данные из таблицы практические
+        setpr(response3.data); // сохраняем полученные данные в состояние
+
+        const response4 = await axios.get('https://reactbckend-2.onrender.com/works'); // Получаем данные из таблицы работы
+        setworks(response4.data); // сохраняем полученные данные в состояние
+
+      } catch (error) {
+        console.error('Ошибкаd при полученdsdии данных:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  
+const [values2,setValues2] = useState({
+ 
+  TopiId:'',
+  prName:'',
+
+})
+const [values3,setValues3] = useState({
+  prId:'',
+  worName:'',
+})
+
+
+  
+ //Генерация дерева
+ 
+     let treeData = [];
+
+     
+     for (var t = 0; t < topics.length; t++) {
+        if (topics[t].subject_id == 5) {
+          const childrenLevel1 = [];
+
+          for( var p = 0; p < pr.length; p++){
+              if (pr[p].id_topic == topics[t].topic_id) {
+                  const childrenLevel2 = [];
+
+                  for( var w = 0; w < works.length; w++){
+                    if (works[w].id_pr == pr[p].pr_id) {
+                      childrenLevel2.push({
+                        title: `${works[w].title}`,
+                        isLeaf:true,
+                        icon: <FileTextTwoTone />,
+                        key:`WR -${works[w].id_works}-${topics[t].topicName}-${pr[p].prName}-${works[w].title}`
+                      });
+                      }
+                  }
+
+                  childrenLevel1.push({
+                    title: `'${pr[p].prName}'`,
+                    children: childrenLevel2,
+                    key:`PR -${pr[p].pr_id}`,
+                    icon: <FolderOpenTwoTone />,
+                  });
+               }
+          }
+
+              treeData.push({
+                title: `Тема '${topics[t].topicName}'`,
+                children: childrenLevel1,
+                key:`TP -${topics[t].topic_id}`,
+                icon: <FolderOpenTwoTone />,
+            });
+        }
+     
+    }
+ 
+
+   const [currentNodeTitle, setCurrentNodeTitle] = useState(null);
+   const handleContextMenu2 = (title) => {
+     console.log(title);
+   };
+   const getMenuForTitle = (title) => {
+
+     if (selectedNode.includes("PR")) {
+       return (
+         <Menu>
+          <Menu.Item key="1" onClick={showModal3}>Создать Задание</Menu.Item>
+           {/* <Menu.Item key="2">Создать Тест</Menu.Item> */}
+           <Menu.Item key="3" onClick={showModal4}>Создать Лекцию</Menu.Item>
+           <Menu.Item key="4" onClick={showModal5}>Удалить </Menu.Item>
+           <Menu.Item key="5" onClick={showModal6}>Переименовать</Menu.Item>
+         </Menu>
+       );
+     } else if (selectedNode.includes("WR")) {
+       return (
+         <Menu>
+           <Menu.Item key="6" onClick={showModal5}>Удалить </Menu.Item>
+           <Menu.Item key="7" onClick={showModal6}>Переименовать</Menu.Item>
+         </Menu>
+       );
+     }else if ( selectedNode.includes("Lesson")){
+       return (
+         <Menu>
+           <Menu.Item key="8" onClick={showModal2}>Создать тему</Menu.Item>
+         </Menu>
+       );
+     }else if (selectedNode.includes("TP"))  {
+       return (
+         <Menu>
+           <Menu.Item key="9" onClick={showModal}>Создать контроль знаний</Menu.Item>
+           <Menu.Item key="13" onClick={showModal5}>Удалить </Menu.Item>
+           <Menu.Item key="14" onClick={showModal6}>Переименовать</Menu.Item>
+         </Menu>
+       );
+     }
+     return null;
+   };
+
+   
+  const [selectedNode, setSelectedNode] = useState("");
+   const handleRightClick = ({ event, node }) => {
+    
+     event.preventDefault();
+     
+    const f = String(node.key)
+    
+     setSelectedNode(f)
+   
+   };
+//Выпадающий список и время
+const [currentD, setCurrentD] = useState('null');
+const [currentT, setCurrentT] = useState('null');
+
+const [currentTime, setCurrentTime] = useState('null');
+const [currentTDif, setCurrentTDif] = useState('null');
+const [currentType, setCurrentType] = useState('null');
+const [currentInclSol, setCurrentInclSol] = useState('null');
+const onChange6 = (value) => {
+  setCurrentInclSol(value)
+  console.log(`selected ${value}`);
+};
+const onChange5 = (value) => {
+  setCurrentType(value)
+  console.log(`selected ${value}`);
+};
+
+const items= [
+  {
+    key: '1',
+    label: 'Дополнительно',
+    children: [<h3>Файл с решением</h3>,<Radio.Group onChange={onChange6}>
+      <Radio value={1}>Нет</Radio>
+      <Radio value={2}>Да</Radio>
+      
+    </Radio.Group>,<h3>Тип задания</h3>,<Select onChange={onChange5}
+    showSearch
+    placeholder="Конспект"
+    optionFilterProp="children"
+    
+    options={[
+      {
+        value: 'Решение задачи',
+        label: 'Решение задачи',
+      },{
+        value: 'Анализ текста',
+        label: 'Анализ текста',
+      },{
+        value: 'Отчёт',
+        label: 'Отчёт',
+      },
+ 
+    ]}
+  />,]
+  },
+  
+];
+const onChange = (value) => {
+  setCurrentT(value)
+  console.log(`selected ${value}`);
+};
+const onChange2 = (value) => {
+  setCurrentD(value)
+  console.log(`selected ${value}`);
+};
+
+const onChange3= (value) => {
+  setCurrentTime(value)
+  console.log(`selected ${value}`);
+};
+
+const onChange4 = (value) => {
+  setCurrentTDif(value)
+  console.log(`selected ${value}`);
+};
+
+
+
+
+const onSearch = (value) => {
+  console.log('search:', value);
+};
+
+// Filter `option.label` match the user type `input`
+const filterOption = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+  //Message boxes
+
+  const [open, setOpen] = useState(false);
+
+  const showModal = () => {
+    setOpen(true);
+  };
+
+  const handleOk = () => {
+var idLes = selectedNode.split("-")
+    
+    
+    axios.post('https://reactbckend-2.onrender.com/p', {Pri:idLes[1],Prn:currentT+` '${document.getElementById("Prn").value}'`, Prd:currentD}).then(res => console.log(res))
+    fetchData();
+    setOpen(false);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const [open2, setOpen2] = useState(false);
+
+  const showModal2 = () => {
+    setOpen2(true);
+  };
+
+
+ 
+      // Получаем текущее значение объекта
+      
+  
+  const handleOk2 = () => {
+    var idLes = selectedNode.split("-")
+
+    axios.post('https://reactbckend-2.onrender.com/q', {TopicID:idLes[1], NameTop: `Тема ${document.getElementById("Mytop").value}` }).then(res => console.log(res))
+    fetchData();
+
+    setOpen2(false);
+  };
+
+  const handleCancel2 = () => {
+    setOpen2(false);
+  };
+
+  const [open3, setOpen3] = useState(false);
+
+  const showModal3 = () => {
+    setOpen3(true);
+  };
+const fetchData = async () => {
+      try {
+        const response = await axios.get('https://reactbckend-2.onrender.com/users'); // Получаем данные из таблицы Пользователи и предметы
+        setArr(response.data); // сохраняем полученные данные в состояние
+        
+        const response2 = await axios.get('https://reactbckend-2.onrender.com/topics'); // Получаем данные из таблицы темы
+        settopics(response2.data); // сохраняем полученные данные в состояние
+        
+        const response3 = await axios.get('https://reactbckend-2.onrender.com/pr'); // Получаем данные из таблицы практические
+        setpr(response3.data); // сохраняем полученные данные в состояние
+
+        const response4 = await axios.get('https://reactbckend-2.onrender.com/works'); // Получаем данные из таблицы работы
+        setworks(response4.data); // сохраняем полученные данные в состояние
+
+      } catch (error) {
+        console.error('Ошибкаd при полученdsdии данных:', error);
+      }
+    };
+  const handleOk3 = () => {
+    var idT = selectedNode.split("-")
+    
+
+    
+    axios.post('https://reactbckend-2.onrender.com/tasks', {Pri:idT[1], TaskN:`Задание '${document.getElementById("TaskN").value}'`, Diff:currentTDif, Time:String(currentTime),Type:currentType,Sol:String(currentInclSol)}).then(res => console.log(res))
+    fetchData();
+    setOpen3(false);
+  };
+
+  const handleCancel3 = () => {
+    setOpen3(false);
+  };
+
+  const [open4, setOpen4] = useState(false);
+
+  const showModal4 = () => {
+    setOpen4(true);
+  };
+
+  const handleOk4 = () => {
+    var idT = selectedNode.split("-")
+   
+    axios.post('https://reactbckend-2.onrender.com/lek', {LekI:idT[1], NameLek:`Лекция '${document.getElementById("LekN").value}'`}).then(res => console.log(res))
+    fetchData();
+    setOpen4(false);
+  };
+
+  const handleCancel4 = () => {
+    setOpen4(false);
+  };
+
+  const [open5, setOpen5] = useState(false);
+
+  const showModal5 = () => {
+    setOpen5(true);
+  };
+
+  const handleOk5 = () => {
+    var idT = selectedNode.split("-")
+
+    setOpen5(false);
+  };
+
+  const handleCancel5 = () => {
+    setOpen5(false);
+  };
+
+  const [open6, setOpen6] = useState(false);
+
+  const showModal6 = () => {
+    setOpen6(true);
+  };
+
+  const handleOk6 = () => {
+    
+    setOpen6(false);
+  };
+
+  const handleCancel6 = () => {
+    setOpen6(false);
+  };
+  const NavigateTo = useNavigate();
+  const ToPrevMode = () =>{
+    NavigateTo('/Catalouger(Preview)');
+  }
+
+  const Save = () =>{
+    axios.post('https://reactbckend-2.onrender.com/Updatetasks', {title:value2}).then(res => console.log(res))
+    fetchData();
+  }
+  const [breadcrumbItems, setBreadcrumbItems] = useState([]);
+
+  const handleClick = (top, pr,task) => {
+    // Создаем новый массив элементов Breadcrumb
+    var idLes = selectedNode.split("-")
+    const newItems = [
+      {
+        title: 'Алгоритмизация',
+      },
+      {
+        type: 'separator',
+        separator: '/',
+      },
+      {
+    
+        title: top,
+      },
+      {
+        type: 'separator',
+      },
+      {
+   
+        title: pr,
+      },
+      {
+        type: 'separator',
+      },
+      
+    ];
+    
+    // Устанавливаем новый массив в состояние
+    setBreadcrumbItems(newItems);
+  };
+   return (
+     <div className='catalboxes'>
+      <Modal
+      open={open2} width={623}
+        title="Добавление темы"
+        onOk={handleOk2}
+        onCancel={handleCancel2}
+        footer={[
+          <Button  onClick={handleCancel2}>
+            Отмена
+          </Button>,
+          <Button  type="primary" onClick={handleOk2}>
+            Создать
+          </Button>,
+          
+        ]}
+      ><Input placeholder='Название темы' id="Mytop" name='Topicname'></Input></Modal>
+      <Modal
+      open={open3} width={623}
+        title="Добавление задания"
+        onOk={handleOk3}
+        onCancel={handleCancel3}
+        footer={[
+          <Button  onClick={handleCancel3}>
+            Отмена
+          </Button>,
+          <Button  type="primary" onClick={handleOk3}>
+            Создать
+          </Button>
+          
+        ]}
+      ><Input placeholder='Название задания' name='Prname' id='TaskN' ></Input>
+      <Select onChange={onChange4}
+    showSearch
+    placeholder="Сложность"
+    optionFilterProp="children"
+   
+    options={[
+      
+    ]}
+  />
+   <TimePicker onChange={onChange3} style={{width:250}} placeholder='Время выполнения' showNow={false}  format="mm" minuteStep={5}/>
+      <Collapse items={items}   /></Modal>
+      <Modal
+      open={open4} width={623}
+        title="Добавление лекции"
+        onOk={handleOk4}
+        onCancel={handleCancel4}
+        footer={[
+          <Button  onClick={handleCancel4}>
+            Отмена
+          </Button>,
+          <Button  type="primary" onClick={handleOk4}>
+            Создать
+          </Button>
+          
+        ]}
+      ><Input placeholder='Название лекции' id='LekN'></Input></Modal>
+      <Modal
+      open={open5 } width={623}
+        title="Вы точно хотите удалить?"
+        onOk={handleOk5}
+        onCancel={handleCancel5}
+        footer={[
+          <Button  onClick={handleCancel5}>
+            Нет
+          </Button>,
+          <Button  type="primary" onClick={handleOk5}>
+            Да
+          </Button>,
+          
+        ]}></Modal>
+      <Modal
+      open={open6} width={623}
+        title="Переимнование"
+        onOk={handleOk6}
+        onCancel={handleCancel6}
+        footer={[
+          <Button  onClick={handleCancel6}>
+            Отмена
+          </Button>,
+          <Button  type="primary" onClick={handleOk6}>
+            Переименовать
+          </Button>,
+          
+        ]}
+      ><Input placeholder='Новое название'></Input></Modal>
+      <Modal
+        open={open} width={623}
+        title="Добавление контроля знаний"
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key="Отмена" onClick={handleCancel}>
+            Отмена
+          </Button>,
+          <Button key="Создать" type="primary"  onClick={handleOk}>
+            Создать
+          </Button>,
+          
+        ]}
+      >
+ <Select
+ id='Prt'
+    showSearch
+    placeholder="Тип контроля знаний"
+    optionFilterProp="children"
+    onChange={onChange}
+    onSearch={onSearch}
+    filterOption={filterOption}
+    options={[
+      {
+        value: 'Домашняя работа',
+        label: 'Домашняя работа',
+      },{
+        value: 'Дифференциальный зачёт',
+        label: 'Дифференциальный зачёт',
+      },{
+        value: 'Зачёт',
+        label: 'Зачёт',
+      },
+      {
+        value: 'Практическая работа',
+        label: 'Практическая работа',
+      },
+      
+      {
+        value: 'Контрольная работа',
+        label: 'Контрольная работа ',
+      },{
+        value: 'Проверочная работа ',
+        label: 'Проверочная работа',
+      },{
+        value: 'Проектная работа',
+        label: 'Проектная работа',
+      },{
+        value: 'Самостоятельная работа',
+        label: 'Самостоятельная работа',
+      },{
+        value: 'Лабораторная работа',
+        label: 'Лабораторная работа',
+      }
+    ]}
+  />
+<Select id='Prd'
+    showSearch
+    placeholder="Сложность"
+    optionFilterProp="children"
+    onChange={onChange2}
+    onSearch={onSearch}
+    filterOption={filterOption}
+    options={[
+      {
+        value: 'Легко',
+        label: 'Легко',
+      },{
+        value: 'Средне',
+        label: 'Средне',
+      },{
+        value: 'Сложно',
+        label: 'Сложно',
+      },
+ 
+    ]}
+  />
+    
+     <Input id='Prn'  placeholder='Название'></Input>
+      </Modal>
+       <div className='row'>
+         <div className='box1' data-aos="fade-right" data-aos-once="true">
+         <div className='notetitle'><h3 className='notetx'>Навигация</h3></div>
+
+          <Input width={20} className='tree search' height={110}  placeholder="Поиск"  />
+          <Collapse className='tree'  items={items2}  onChange={onChange} />
+         <Dropdown overlay={getMenuForTitle(`Пр`)} trigger={['contextMenu']}>
+         <div style={{width:'200px', height:'300px'}}>  
+             <Tree treeData={treeData} showIcon  showLine  onSelect={handleSelect} onRightClick={handleRightClick}>
+          
+               {/* <TreeNode   title="Алгоритмизация" key={"Lesson-5"}    >
+               {generateTreeData().map((node) => ( 
+                 <TreeNode  title={node.title}  key={node.key} onMouseEnter={() => handleContextMenu2(node.key)}>
+                   {node.children &&
+                     node.children.map((child1) => (
+                       <TreeNode   onContextMenu={(e) => handleContextMenu2(e, child1.title)}  key={child1.key}  title={child1.title}>
+                         {child1.children &&
+                           child1.children.map((child2) => (
+                             <TreeNode  onContextMenu={(e) => handleContextMenu2(e, child1.title)}  key={child2.key}   title={child2.title} />
+                           ))}
+                       </TreeNode>
+                     ))}
+                 </TreeNode>
+               ))}
+               </TreeNode> */}
+           </Tree></div>
+           </Dropdown>
+           <div>
+        
+     </div>
+         </div>
+         <div className='box2' data-aos-delay='400' data-aos="fade-right" data-aos-once="true">
+           <div className='main'>
+            <Breadcrumb
+              separator=""
+               items={breadcrumbItems}/>
+           <h3 id='TaskName'></h3>
+            <div className="container">
+                 <div data-color-mode="light">
+                   <MDEditor height={280} value={value2} onChange={setValue2} />
+                 </div>
+             </div> 
+             <div>
+             <h3>Сложность</h3>
+             <Select
+                showSearch
+                placeholder="Легко"
+                optionFilterProp="children"
+                
+                options={[
+                  {
+                    value: 'Решение задачи',
+                    label: 'Решение задачи',
+                  },{
+                    value: 'Анализ текста',
+                    label: 'Анализ текста',
+                  },{
+                    value: 'Отчёт',
+                    label: 'Отчёт',
+                  },
+            
+                ]}
+              />
+                <h3>Тип задания</h3>
+                <Select
+                showSearch
+                placeholder="Конспект"
+                optionFilterProp="children"
+                
+                options={[
+                  {
+                    value: 'Решение задачи',
+                    label: 'Решение задачи',
+                  },{
+                    value: 'Анализ текста',
+                    label: 'Анализ текста',
+                  },{
+                    value: 'Отчёт',
+                    label: 'Отчёт',
+                  },
+            
+                ]}
+              />
+  <h3>Время выполнения</h3>
+  <TimePicker style={{width:240}} placeholder='Время выполнения' showNow={false}  format="mm" minuteStep={5}/>
+  <button className='btnChangeMode' onClick={ToPrevMode}>Перейти в режим чтения</button>
+  <button className='btnSave' onClick={Save}>Сохранить</button>
+            </div>
+           </div>
+         </div>
+         <div className='box3' data-aos-delay='800' data-aos="fade-right" data-aos-once="true">
+         <div className='notetitle'><h3 className='notetx'>Блокнот</h3></div>
+           <div className='main'>
+           
+        
+             <div className="container">
+                 <div data-color-mode="light">
+                   <MDEditor  height={250} value={value} onChange={setValue} />
+                 </div> 
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+   );
+           }
+ export default ContextMenuTree;

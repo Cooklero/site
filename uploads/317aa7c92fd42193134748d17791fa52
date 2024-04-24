@@ -1,0 +1,269 @@
+public class Matrix
+{
+    int[,] matrix;
+    public Matrix(int[,] Mat)
+    {
+        matrix = Mat;
+    }
+    static void Main() {    
+    string text;
+    int[,]list = {{0,0},{0,0}};
+    Matrix Msum = new Matrix(list);
+    int[,] list2 = { { 0, 0 }, { 0, 0 } };
+    Matrix m1 = new Matrix(list);
+    Matrix m2 = new Matrix(list2);
+
+    Console.WriteLine("Введите 2x2 матрицу как показано в примере,\bгде первые 2 цифры означают элементы 1 строки,а 2 последние это элементы 2 строки матрицы.\bПример:2,3,1,5");
+    text = Console.ReadLine();
+    TryParse(m1,text);
+
+    Console.WriteLine($"1 Матрица: {m1.ToString()}");
+    Console.WriteLine($"Определитель: {m1.Determinant}");
+    Console.WriteLine($"Обратная матрица 1 матрицы: {(m1++).ToString()}");
+    Console.WriteLine($"Обратная матрица 1 матрицы: {(m1--).ToString()}");
+
+    Console.WriteLine("Введите 2x2 матрицу как показано в примере,\bгде первые 2 цифры означают элементы 1 строки,а 2 последние это элементы 2 строки матрицы.\bПример:2,3,1,5");
+    text = Console.ReadLine();
+    TryParse(m2,text);
+    
+    Console.WriteLine($"2 Матрица: {m2.ToString()}");
+    Console.WriteLine($"Определитель: {m2.Determinant}");
+    Console.WriteLine($"Обратная матрица 2 матрицы: {(m2++).ToString()}");
+    Console.WriteLine($"Обратная матрица 2 матрицы: {(m2--).ToString()}");
+    
+    Msum= m1 + m2;
+    Console.WriteLine($"Сумма двух матриц:{(Msum).ToString()}");
+  
+    Msum = m1 - m2;
+    Console.WriteLine($"Разность двух матриц:{(Msum).ToString()}");
+
+    Msum = m1 * m2;
+    Console.WriteLine($"Произведение матриц:{(Msum).ToString()}");
+
+    
+    Console.WriteLine($"Сравнение матриц знаком больше:{(m1 > m2)}");
+
+
+    Console.WriteLine($"Сравнение матриц знаком меньше:{(m1 < m2)}");
+
+
+    Console.WriteLine($"Проверка матриц на равенство:{(m1 == m2)}");
+
+
+    Console.WriteLine($"Проверка матриц на неравенство:{(m1 != m2)}");
+    Console.ReadKey();
+    }
+
+    public int Determinant
+    {
+        get { return this[0, 0] * this[1, 1] - this[0, 1] * this[1, 0]; }
+    }
+
+    public static void Parse(Matrix m1, string tex)
+    {
+        string[] Arr2;
+        Arr2 = tex.Split(',');
+        m1[0, 0] = Convert.ToInt32(Arr2[0]);
+        m1[0, 1] = Convert.ToInt32(Arr2[1]);
+        m1[1, 0] = Convert.ToInt32(Arr2[2]);
+        m1[1, 1] = Convert.ToInt32(Arr2[3]);
+    }
+
+    public static bool TryParse(Matrix list, string tex)
+    {
+        string[] Arr2;
+        char ch = ',';
+        int count = 0;
+        foreach (char c in tex)
+        {
+            if (ch == c)
+            {
+                count++;
+            }
+        }
+        Arr2 = tex.Split(',');
+        int s = 0;
+        for (int i = 0; i < Arr2.Length; i++)
+        {
+            if ((!int.TryParse(Arr2[i], out int f)) || (count != 3))
+            {
+                s = 1;
+                break;
+            }
+
+        }
+        if (s != 1)
+        {
+            list[0, 0] = Convert.ToInt32(Arr2[0]);
+            list[0, 1] = Convert.ToInt32(Arr2[1]);
+            list[1, 0] = Convert.ToInt32(Arr2[2]);
+            list[1, 1] = Convert.ToInt32(Arr2[3]);
+            return true;
+        }
+        else
+        {
+            return false;
+
+        }
+    }
+
+    static double[,]  InverseMatrix(Matrix list)
+    {
+        double[,] InvMatrix = { { 0, 0 }, { 0, 0 } };
+        if (list.Determinant != 0)
+        {
+            InvMatrix[0, 0] = Math.Round(Convert.ToDouble(list[1, 1]) / list.Determinant, 2);
+            InvMatrix[0, 1] = Math.Round((Convert.ToDouble(list[0, 1] * -1)) / list.Determinant, 2);
+            InvMatrix[1, 0] = Math.Round((Convert.ToDouble(list[1, 0] * -1)) / list.Determinant, 2);
+            InvMatrix[1, 1] = Math.Round(Convert.ToDouble(list[0, 0]) / list.Determinant, 2);
+            return InvMatrix;
+        }
+        else
+        {
+
+            return null;
+        }
+    }
+
+    public int this[int index1, int index2]
+    {
+        get
+        {
+            if ((index1 >= 0 && index1 < 2) && (index2 >= 0 && index2 < 2))
+                return matrix[index1, index2];
+
+            else
+                throw new ArgumentOutOfRangeException("Индекс за пределами матрицы!");
+        }
+        set
+        {
+            if ((index1 >= 0 && index1 < 2) && (index2 >= 0 && index2 < 2))
+                matrix[index1, index2] = value;
+
+            else
+                throw new ArgumentOutOfRangeException("Индекс за пределами матрицы!");
+        }
+    }
+
+    public override string ToString()
+    {
+        return $"{this[0, 0]},{this[0, 1]},{this[1, 0]},{this[1, 1]}";
+    }
+
+
+    public static Matrix operator +(Matrix list1, Matrix list2)
+    {
+        int[,] k = { { 0, 0 }, { 0, 0 } };
+        Matrix SumMatrix = new Matrix(k);
+        SumMatrix[0, 0] = list1[0, 0] + list2[0, 0];
+        SumMatrix[0, 1] = list1[0, 1] + list2[0, 1];
+        SumMatrix[1, 0] = list1[1, 0] + list2[1, 0];
+        SumMatrix[1, 1] = list1[1, 1] + list2[1, 1];
+        return SumMatrix;
+    }
+
+    public static Matrix operator -(Matrix list1, Matrix list2)
+    {
+        int[,] k = { { 0, 0 }, { 0, 0 } };
+        Matrix SumMatrix = new Matrix(k);
+        SumMatrix[0, 0] = list1[0, 0] - list2[0, 0];
+        SumMatrix[0, 1] = list1[0, 1] - list2[0, 1];
+        SumMatrix[1, 0] = list1[1, 0] - list2[1, 0];
+        SumMatrix[1, 1] = list1[1, 1] - list2[1, 1];
+        return SumMatrix;
+    }
+
+    public static Matrix operator ++(Matrix list1)
+    {
+        list1[0, 0]++;
+        list1[0, 1]++;
+        list1[1, 0]++;
+        list1[1, 1]++;
+        return list1;
+
+    }
+
+    public static Matrix operator --(Matrix list1)
+    {
+        list1[0, 0]--;
+        list1[0, 1]--;
+        list1[1, 0]--;
+        list1[1, 1]--;
+        return list1;
+    }
+
+    public static Matrix operator *(Matrix list1, Matrix list2)
+    {
+        int[,] k = { { 0, 0 }, { 0, 0 } };
+        Matrix MultiplyMatrix = new Matrix(k);
+        MultiplyMatrix[0, 0] = list1[0, 0] * list2[0, 0] + list1[0, 1] * list2[1, 0];
+        MultiplyMatrix[0, 1] = list1[0, 0] * list2[0, 1] + list1[0, 1] * list2[1, 1];
+        MultiplyMatrix[1, 0] = list1[1, 0] * list2[0, 0] + list1[1, 1] * list2[1, 0];
+        MultiplyMatrix[1, 1] = list1[1, 0] * list2[0, 1] + list1[1, 1] * list2[1, 1];
+        return MultiplyMatrix;
+    }
+
+    public static double[,] operator /(Matrix list1, Matrix list2)
+    {
+
+        double[,] k = { { 0, 0 }, { 0, 0 } };
+        int[,] Minv = { { 0, 0 }, { 0, 0 } };
+        double[,] MultiplyMatrix = InverseMatrix(list2);
+        k[0, 0] = list1[0, 0] * MultiplyMatrix[0, 0] + list1[0, 1] * MultiplyMatrix[1, 0];
+        k[0, 1] = list1[0, 0] * MultiplyMatrix[0, 1] + list1[0, 1] * MultiplyMatrix[1, 1];
+        k[1, 0] = list1[1, 0] * MultiplyMatrix[0, 0] + list1[1, 1] * MultiplyMatrix[1, 0];
+        k[1, 1] = list1[1, 0] * MultiplyMatrix[0, 1] + list1[1, 1] * MultiplyMatrix[1, 1];
+        return k;
+    }
+
+    public static bool operator <(Matrix list1, Matrix list2)
+    {
+        if (list1.Determinant < list2.Determinant)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool operator >(Matrix list1, Matrix list2)
+    {
+        if (list1.Determinant > list2.Determinant)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool operator ==(Matrix list1, Matrix list2)
+    {
+        if (list1.Determinant == list2.Determinant)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public static bool operator !=(Matrix list1, Matrix list2)
+    {
+        if (list1.Determinant != list2.Determinant)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+}
+

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BAR CHART</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgb(255, 255, 255);
+      }
+      .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+      .chartCard {
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 700px;
+        padding: 20px;
+        border-radius: 20px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid white;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px 0 rgba(0, 0, 0, 0.37);
+        background: white;
+        display: flex;
+      }
+      .colSmall{
+        width: 40px;
+      }
+      .colLarge{
+        max-width: 700px;
+        overflow-x: scroll;
+      }
+      .box{
+        width: calc(700px - 40px);
+        height: 500px;
+
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="chartMenu">
+      <p>Статистика</p>
+    </div>
+    <div class="chartCard">
+      <div class="chartBox">
+        <div class="colSmall">
+        <canvas id="myChart2"></canvas>
+            </div>
+            <div class="colLarge">
+                <div class="box">
+                    <canvas id="myChart"></canvas>
+                </div>
+                 </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+  // chart
+    const labels = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс','Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс',]
+    const datapoints = [13, 3, 3, 3, 3, 3,3, 3, 3, 3, 3, 3, 3,3, 3, 3, 3, 3, 3, 3,3, 3, 3, 3, 3, 3, 3,3,3, 3, 3, 3, 3, 3,3, 3, 3, 3, 3, 3, 3,3,3, 3, 3, 3, 3, 3,3, 3, 3, 3, 3, 3, 3,5]
+    const backgroundColor = ['#93B076']
+
+    const datapoints2 =[17, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 9, 7, 7, 6, 7, 12, 7, 2, ]
+    const backgroundColor2 = ['#FFB562']
+
+    const datapoints3 = [4, 1,1, 1, 1, 1, 19, 18, 12, 6, 9, 12, 13, 19, 12,18, 12, 6, 18, 12, 6, 9, 12, 13, 19, 7, 18, 12, 6, 9, 12, 13, 17, 18, 12, 6, 9, 12, 13, 19,6, 9, 12, 13, 19,6, 9, 12, 13, 19,6, 9, 12, 13, 19]
+    const backgroundColor3 = ['#e63950']
+
+  //   const sumDatapoints = [];
+  //   for(i = 0; i < datapoints.length -1; i++){
+  //     sumDatapoints.push(datapoints[i] + datapoints2[i]+datapoints3[i]);
+  //   }
+
+  // let merged = borderColor.map((border, i) => {
+  //   return {"border": borderColor[i], "background": backgroundColor[i],
+  //    "datapoint": datapoint[i], "label": labels[i], "sumDatapoints": sumDatapoints[i]}
+  // });
+  // let merged2 = borderColor2.map((border, i) => {
+  //   return {"border": borderColor2[i], "background": backgroundColor2[i],
+  //    "datapoint": datapoint2[i], "label": labels2[i], "sumDatapoints": sumDatapoints2[i]}
+  // });
+
+  // const dataSort = merged.sort(function(a, b){
+  //   return b.sumDatapoints - a.sumDatapoints;
+  // })
+
+
+    const data = {
+      labels: labels,
+      borderRadius:9,
+      datasets: [{
+        data: datapoints,
+        label: 'Лёгкие задания',
+        backgroundColor: backgroundColor,
+        order:0,
+      },
+      {
+        label: 'Средние задания',
+        borderRadius:9,
+        data: datapoints2,
+        backgroundColor:backgroundColor2,
+        order:1,
+      },
+      {
+        label: 'Сложные заданий',
+        borderRadius:10,
+        data: datapoints3,
+        backgroundColor: backgroundColor3,
+        order:2,
+      }]
+
+    };
+
+    // config 
+    const config = {
+      type: 'bar',
+      data,
+      options: {
+        maintainAspectRatio: false,
+        layout:{
+            padding:{
+                top: 10,
+                bottom: 10,
+                
+            
+            }
+        },
+        
+       
+        scales: {
+            x:{
+                stacked: true,
+            },
+          y: {
+            stacked:true,
+            beginAtZero: true,
+            ticks:{
+                display: false,
+            },
+            grid:{
+                drawTicks: false,
+                drawBorder: false,
+            }
+          }
+        },
+        plugins:{
+            legend:{
+                display: false,
+            }
+        }
+      }
+    };
+    const myChart = new Chart(
+      document.getElementById('myChart'),
+      config
+    );
+    /////////////////////chart2
+    const data2 = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Weekly Sales',
+        data: myChart.data.datasets[0].data,
+      }]
+    };
+
+    // config 
+    const config2 = {
+      type: 'bar',
+      data: data2,
+      options: {
+        maintainAspectRatio: false,
+        layout:{
+            padding:{
+                bottom: 39,
+            }
+        },
+        barPercentage: 12,
+        borderRadius:{
+            topLeft: 10,
+            topRight: 10,
+            bottomRight: 10,
+            bottomLeft: 10
+        },
+        scales: {
+            x:{
+                stacked: false,
+                ticks:{
+                    display: false,
+                },
+                grid:{
+                    drawTicks: false
+                }
+            },
+          y: {
+            beginAtZero: true,
+            afterFit: (ctx) => {
+                ctx.width = 45;
+            }
+          }
+        },
+        plugins:{
+            legend:{
+                display: false,
+            }
+        }
+      }
+    };
+
+    // render init block
+    const myChart2 = new Chart(
+      document.getElementById('myChart2'),
+      config2
+    );
+    const box = document.querySelector('.box');
+    const barLength = myChart.data.labels.length;
+    if (barLength > 7){
+        const chartWidth = 700 + ((barLength - 7) * 30)
+        box.style.width = `${chartWidth}px`;
+    }
+
+    </script>
+
+  </body>
+</html>
