@@ -50,10 +50,10 @@ app.use(cors());
 app.use(express.json());
 
  const db = mysql.createConnection({
-     host:"sql.freedb.tech",
-     user:"freedb_Studentksr",
-     password:"S?FA5YcjfEy8XXu",
-     database:"freedb_Ksrforproject",
+     host:"sql11.freemysqlhosting.net",
+     user:"sql11701543",
+     password:"6LKPb9cF42",
+     database:"sql11701543",
      port:"3306"
  })
  
@@ -68,7 +68,7 @@ app.use(express.json());
   app.get('/', (re,res)=>{
     return res.json("Бэкенд на связи")
   })
- app.listen(4000, () =>{
+ app.listen(8081, () =>{
     console.log("Слушаю...")
 })
 
